@@ -6,12 +6,10 @@ import com.nova.guestApp.dtos.request.UserRequest;
 import com.nova.guestApp.dtos.response.AuthResponse;
 import com.nova.guestApp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/auth")
 public class UserController {
 

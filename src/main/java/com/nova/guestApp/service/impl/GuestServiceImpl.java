@@ -1,6 +1,7 @@
 package com.nova.guestApp.service.impl;
 
 import com.nova.guestApp.dtos.request.CheckoutRequest;
+import com.nova.guestApp.dtos.request.EmailDetailsRequest;
 import com.nova.guestApp.dtos.request.GuestRequest;
 import com.nova.guestApp.dtos.response.AllGuestResponse;
 import com.nova.guestApp.dtos.response.CustomResponse;
@@ -9,6 +10,7 @@ import com.nova.guestApp.enums.Status;
 import com.nova.guestApp.model.Guest;
 import com.nova.guestApp.repository.GuestRepository;
 import com.nova.guestApp.repository.UserRepository;
+import com.nova.guestApp.service.EmailService;
 import com.nova.guestApp.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ public class GuestServiceImpl implements GuestService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public CustomResponse checkIn(GuestRequest request) {
@@ -54,6 +59,20 @@ public class GuestServiceImpl implements GuestService {
                 .build();
 
         Guest savedGuest = guestRepository.save(guest);
+
+        //send email alert
+        EmailDetailsRequest emailDetails = EmailDetailsRequest.builder()
+                .recipient(savedGuest.getEmail())
+                .subject("Check in alert from Nova bank")
+                .messageBody("Hi, " + savedGuest.getName() + " \n" +
+                        "You have been checked in with the tag id: " + savedGuest.getTagId() +
+                        "\n" +
+                        "\n" +
+                        "Kindly see the receptionist to checkout to your way out."
+                )
+                .build();
+        emailService.sendEmailAlert(emailDetails);
+        //email sent
 
         return CustomResponse.builder()
                 .responseCode("002")
@@ -86,6 +105,20 @@ public class GuestServiceImpl implements GuestService {
            findGuest.setStatus(Status.CHECKED_OUT);
 
            Guest savedGuest = guestRepository.save(findGuest);
+
+            //send email alert
+            EmailDetailsRequest emailDetails = EmailDetailsRequest.builder()
+                    .recipient(savedGuest.getEmail())
+                    .subject("Check out alert from Nova bank")
+                    .messageBody("Hi, " + savedGuest.getName() + " \n" +
+                            "You have been checked out with the tag id: " + savedGuest.getTagId() + " successfully." +
+                            "\n" +
+                            "\n" +
+                            "Thank you for visiting nova bank.🎉"
+                    )
+                    .build();
+            emailService.sendEmailAlert(emailDetails);
+            //email sent
 
            return CustomResponse.builder()
                    .responseCode("002")
