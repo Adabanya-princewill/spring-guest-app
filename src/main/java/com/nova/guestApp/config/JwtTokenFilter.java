@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // JWT validation is Skipped for these public endpoints
         String path = request.getRequestURI();
         if (path.startsWith("/api/auth/login/**") || path.startsWith("/api/auth/create-account") || path.startsWith(
-                "/api/auth/access-token")) {
+                "/api/auth/refresh-token")) {
             filterChain.doFilter(request, response);
             return;
         }

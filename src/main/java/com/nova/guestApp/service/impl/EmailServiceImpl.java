@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
             mailMessage.setSubject(request.getSubject());
             mailMessage.setText(request.getMessageBody());
 
-            javaMailSender.send(mailMessage);
+           // javaMailSender.send(mailMessage);
             System.out.println("mail sent!");
         } catch (MailException e) {
             throw new RuntimeException(e);

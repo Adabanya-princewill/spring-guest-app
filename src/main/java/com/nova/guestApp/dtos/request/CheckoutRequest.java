@@ -14,5 +14,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CheckoutRequest {
     private String name;
-    private LocalDateTime checkOutTime;
+    private String checkOutTime;
 }

@@ -46,12 +46,12 @@ public class GuestServiceImpl implements GuestService {
         }
 
         Guest guest = Guest.builder()
-                .name(request.getName())
+                .name(request.getName().toLowerCase())
                 .phoneNumber(request.getPhoneNumber())
-                .staffName(request.getStaffName())
+                .staffName(request.getStaffName().toLowerCase())
                 .tagId(request.getTagId())
                 .purposeOfVisit(request.getPurposeOfVisit())
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .status(Status.CHECKED_IN)
                 .checkedOutBy(null)
                 .checkOutTime(null)
@@ -87,7 +87,7 @@ public class GuestServiceImpl implements GuestService {
                         .email(savedGuest.getEmail())
                         .status(savedGuest.getStatus())
                         .checkedOutBy(null)
-                        .checkInTime(String.valueOf(savedGuest.getCheckInTime()))
+                        .checkInTime(savedGuest.getCheckInTime())
                         .checkOutTime(null)
                         .build()
                 )
@@ -124,7 +124,7 @@ public class GuestServiceImpl implements GuestService {
                    .responseCode("002")
                    .responseMessage("Checkout successful")
                    .response(GuestResponse.builder()
-                           .checkOutTime(String.valueOf(request.getCheckOutTime()))
+                           .checkOutTime(request.getCheckOutTime())
                            .id(savedGuest.getId())
                            .name(savedGuest.getName())
                            .phoneNumber(savedGuest.getPhoneNumber())
@@ -134,7 +134,7 @@ public class GuestServiceImpl implements GuestService {
                            .email(savedGuest.getEmail())
                            .status(savedGuest.getStatus())
                            .checkedOutBy(savedGuest.getCheckedOutBy())
-                           .checkInTime(String.valueOf(savedGuest.getCheckInTime()))
+                           .checkInTime(savedGuest.getCheckInTime())
                            .build())
                    .build();
         }
@@ -162,7 +162,8 @@ public class GuestServiceImpl implements GuestService {
             res.setPurposeOfVisit(guest.getPurposeOfVisit());
             res.setEmail(guest.getEmail());
             res.setCheckedOutBy(guest.getCheckedOutBy());
-            res.setCheckInTime(String.valueOf(guest.getCheckInTime()));
+            res.setCheckInTime(guest.getCheckInTime());
+            res.setCheckOutTime(guest.getCheckOutTime());
             response.add(res);
         }
         return AllGuestResponse.builder()

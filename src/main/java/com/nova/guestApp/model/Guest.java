@@ -1,5 +1,6 @@
 package com.nova.guestApp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nova.guestApp.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,8 +44,8 @@ public class Guest {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @CreationTimestamp
-    private LocalDateTime checkInTime;
+    private String checkInTime;
 
-    private LocalDateTime checkOutTime;
+
+   private String checkOutTime;
 }

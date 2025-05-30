@@ -18,5 +18,5 @@ public class GuestRequest {
     private String tagId;
     private String purposeOfVisit;
     private String email;
-    private LocalDateTime checkInTime;
+    private String checkInTime;
 }
