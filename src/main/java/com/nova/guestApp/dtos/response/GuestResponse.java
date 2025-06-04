@@ -1,5 +1,6 @@
 package com.nova.guestApp.dtos.response;
 
+import com.nova.guestApp.enums.CardStatus;
 import com.nova.guestApp.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,9 @@ public class GuestResponse {
     private String purposeOfVisit;
     private String email;
     private Status status;
+    private CardStatus cardStatus;
     private String checkedOutBy;
     private String checkInTime;
     private String checkOutTime;
+    private String comment;
 }

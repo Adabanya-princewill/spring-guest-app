@@ -21,10 +21,10 @@ public class GuestController {
         return guestService.checkIn(request);
     }
 
-    ///  TODO: implement checkout in service impl
-    @PostMapping("/check-out/{id}")
-    public CustomResponse checkout(@RequestBody CheckoutRequest request, @PathVariable int id) {
-        return guestService.checkOut(request, id);
+    @PostMapping("{id}/check-out")
+    public CustomResponse checkout(@RequestBody CheckoutRequest request, @PathVariable int id,
+                                   @RequestParam boolean isTagSubmitted) {
+        return guestService.checkOut(request, id, isTagSubmitted);
     }
 
     @GetMapping("/all")

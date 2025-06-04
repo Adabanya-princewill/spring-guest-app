@@ -15,4 +15,5 @@ import java.time.LocalDateTime;
 public class CheckoutRequest {
     private String name;
     private String checkOutTime;
+    private String comment;
 }

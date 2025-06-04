@@ -1,6 +1,7 @@
 package com.nova.guestApp.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nova.guestApp.enums.CardStatus;
 import com.nova.guestApp.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,14 +36,19 @@ public class Guest {
     @Column(nullable = false)
     private String purposeOfVisit;
 
-    @Column(nullable = false)
     private String email;
+
+    private String comment;
 
     private String checkedOutBy;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CardStatus cardStatus;
 
     private String checkInTime;
 

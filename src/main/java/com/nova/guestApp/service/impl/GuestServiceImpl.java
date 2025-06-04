@@ -6,6 +6,7 @@ import com.nova.guestApp.dtos.request.GuestRequest;
 import com.nova.guestApp.dtos.response.AllGuestResponse;
 import com.nova.guestApp.dtos.response.CustomResponse;
 import com.nova.guestApp.dtos.response.GuestResponse;
+import com.nova.guestApp.enums.CardStatus;
 import com.nova.guestApp.enums.Status;
 import com.nova.guestApp.model.Guest;
 import com.nova.guestApp.repository.GuestRepository;
@@ -53,6 +54,8 @@ public class GuestServiceImpl implements GuestService {
                 .purposeOfVisit(request.getPurposeOfVisit())
                 .email(request.getEmail().toLowerCase())
                 .status(Status.CHECKED_IN)
+                .cardStatus(CardStatus.NOT_SUBMITTED)
+                .comment(null)
                 .checkedOutBy(null)
                 .checkOutTime(null)
                 .checkInTime(request.getCheckInTime())
@@ -87,6 +90,7 @@ public class GuestServiceImpl implements GuestService {
                         .email(savedGuest.getEmail())
                         .status(savedGuest.getStatus())
                         .checkedOutBy(null)
+                        .cardStatus(savedGuest.getCardStatus())
                         .checkInTime(savedGuest.getCheckInTime())
                         .checkOutTime(null)
                         .build()
@@ -96,15 +100,20 @@ public class GuestServiceImpl implements GuestService {
 
 
     @Override
-    public CustomResponse checkOut(CheckoutRequest request, int id) {
+    public CustomResponse checkOut(CheckoutRequest request, int id, boolean isTagSubmitted) {
         Guest findGuest = guestRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if(findGuest.getStatus() == Status.CHECKED_IN){
-           findGuest.setCheckedOutBy(request.getName());
-           findGuest.setCheckOutTime(request.getCheckOutTime());
-           findGuest.setStatus(Status.CHECKED_OUT);
-
-           Guest savedGuest = guestRepository.save(findGuest);
+        if (findGuest.getStatus() == Status.CHECKED_IN) {
+            findGuest.setCheckedOutBy(request.getName());
+            findGuest.setCheckOutTime(request.getCheckOutTime());
+            findGuest.setStatus(Status.CHECKED_OUT);
+            if (isTagSubmitted) {
+                findGuest.setCardStatus(CardStatus.SUBMITTED);
+            } else {
+                findGuest.setCardStatus(CardStatus.NOT_SUBMITTED);
+                findGuest.setComment(request.getComment());
+            }
+            Guest savedGuest = guestRepository.save(findGuest);
 
             //send email alert
             EmailDetailsRequest emailDetails = EmailDetailsRequest.builder()
@@ -120,24 +129,27 @@ public class GuestServiceImpl implements GuestService {
             emailService.sendEmailAlert(emailDetails);
             //email sent
 
-           return CustomResponse.builder()
-                   .responseCode("002")
-                   .responseMessage("Checkout successful")
-                   .response(GuestResponse.builder()
-                           .checkOutTime(request.getCheckOutTime())
-                           .id(savedGuest.getId())
-                           .name(savedGuest.getName())
-                           .phoneNumber(savedGuest.getPhoneNumber())
-                           .staffName(savedGuest.getStaffName())
-                           .tagId(savedGuest.getTagId())
-                           .purposeOfVisit(savedGuest.getPurposeOfVisit())
-                           .email(savedGuest.getEmail())
-                           .status(savedGuest.getStatus())
-                           .checkedOutBy(savedGuest.getCheckedOutBy())
-                           .checkInTime(savedGuest.getCheckInTime())
-                           .build())
-                   .build();
+            return CustomResponse.builder()
+                    .responseCode("002")
+                    .responseMessage("Checkout successful")
+                    .response(GuestResponse.builder()
+                            .checkOutTime(request.getCheckOutTime())
+                            .id(savedGuest.getId())
+                            .name(savedGuest.getName())
+                            .phoneNumber(savedGuest.getPhoneNumber())
+                            .staffName(savedGuest.getStaffName())
+                            .tagId(savedGuest.getTagId())
+                            .purposeOfVisit(savedGuest.getPurposeOfVisit())
+                            .email(savedGuest.getEmail())
+                            .status(savedGuest.getStatus())
+                            .cardStatus(savedGuest.getCardStatus())
+                            .checkedOutBy(savedGuest.getCheckedOutBy())
+                            .checkInTime(savedGuest.getCheckInTime())
+                            .comment(savedGuest.getComment())
+                            .build())
+                    .build();
         }
+
         return CustomResponse.builder()
                 .responseCode("000")
                 .responseMessage("Already checked out")
@@ -151,7 +163,7 @@ public class GuestServiceImpl implements GuestService {
 
         List<GuestResponse> response = new ArrayList<>();
 
-        for(Guest guest: guests){
+        for (Guest guest : guests) {
             GuestResponse res = new GuestResponse();
             res.setId(guest.getId());
             res.setName(guest.getName());
@@ -161,6 +173,8 @@ public class GuestServiceImpl implements GuestService {
             res.setStatus(guest.getStatus());
             res.setPurposeOfVisit(guest.getPurposeOfVisit());
             res.setEmail(guest.getEmail());
+            res.setCardStatus(guest.getCardStatus());
+            res.setComment(guest.getComment());
             res.setCheckedOutBy(guest.getCheckedOutBy());
             res.setCheckInTime(guest.getCheckInTime());
             res.setCheckOutTime(guest.getCheckOutTime());

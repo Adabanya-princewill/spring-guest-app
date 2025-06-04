@@ -19,4 +19,6 @@ public class GuestRequest {
     private String purposeOfVisit;
     private String email;
     private String checkInTime;
+
+
 }

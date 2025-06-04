@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public interface GuestService {
     CustomResponse checkIn(GuestRequest request);
 
-    CustomResponse checkOut(CheckoutRequest request, int id);
+    CustomResponse checkOut(CheckoutRequest request, int id, boolean isTagSubmitted);
 
     AllGuestResponse getAllGuest();
 }
